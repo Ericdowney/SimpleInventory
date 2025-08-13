@@ -1,0 +1,35 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0.0",
+	"FriendlyName": "SimpleInventory",
+	"Description": "Provides the foundation for a robust inventory system.",
+	"Category": "Other",
+	"CreatedBy": "MiniGameDev",
+	"CreatedByURL": "https://minigamedevweb.web.app",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "SimpleInventory",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+          {
+            "Name": "SimpleInventoryEditor",
+            "Type": "Editor",
+            "LoadingPhase": "Default"
+        },
+		{
+			"Name": "SimpleInventoryTests",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"EnabledByDefault": true
+		}
+	]
+}

@@ -1,0 +1,96 @@
+# -----------------------
+# Unreal Engine Plugin
+# -----------------------
+
+# Compiled binary files
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# Unreal Build System files
+.vscode/
+.vs/
+*.VC.db
+*.VC.opendb
+*.sdf
+*.suo
+*.user
+*.userprefs
+*.opensdf
+*.ipch
+*.db
+*.opendb
+*.log
+*.tlog
+
+# Xcode
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+*.xcuserstate
+*.xcworkspace
+*.xcworkspacedata
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Generated project files
+*.xcodeproj
+*.xcworkspace
+*.sln
+*.suo
+*.opensdf
+*.opendb
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Build artifacts
+Build/
+*.pdb
+*.obj
+*.o
+*.mod
+*.module
+*.asm
+*.lib
+*.a
+*.so
+*.dylib
+*.dll
+*.app
+*.exe
+
+# Unreal cache and temp files
+*.generated.*
+*_CompiledData.bin
+*.gen.cpp
+*.generated.h
+*.tmp
+*.bak
+*.old
+*.orig
+
+# Crash reports
+*.dmp
+*.mdmp
+
+# Local config overrides
+Config/DefaultEditorPerProjectUserSettings.ini
+Config/DefaultEditor.ini
+Config/DefaultEngine.ini
+Config/DefaultGameUserSettings.ini
+Config/DefaultDeviceProfiles.ini
+Config/DefaultScalability.ini
+
+# Optional: Ignore plugin-specific cache if any
+/Saved
+

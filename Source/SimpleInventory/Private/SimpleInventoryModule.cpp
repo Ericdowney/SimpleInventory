@@ -1,0 +1,22 @@
+// Copyright Eric Downey - 2025
+
+#include "SimpleInventoryModule.h"
+
+#include "SimpleInventoryLog.h"
+
+#define LOCTEXT_NAMESPACE "FSimpleInventoryModule"
+
+void FSimpleInventoryModule::StartupModule() {
+	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+    UE_LOG(SimpleInventoryLog, Verbose, TEXT("FSimpleInventoryModule::StartupModule"));
+}
+
+void FSimpleInventoryModule::ShutdownModule() {
+	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
+	// we call this function before unloading the module.
+    UE_LOG(SimpleInventoryLog, Verbose, TEXT("FSimpleInventoryModule::ShutdownModule"));
+}
+
+#undef LOCTEXT_NAMESPACE
+	
+IMPLEMENT_MODULE(FSimpleInventoryModule, SimpleInventory)
