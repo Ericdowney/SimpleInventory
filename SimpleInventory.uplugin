@@ -7,9 +7,9 @@
 	"Category": "Other",
 	"CreatedBy": "MiniGameDev",
 	"CreatedByURL": "https://minigamedevweb.web.app",
-	"DocsURL": "",
+	"DocsURL": "https://github.com/Ericdowney/SimpleInventory",
 	"MarketplaceURL": "",
-	"SupportURL": "",
+	"SupportURL": "https://github.com/Ericdowney/SimpleInventory",
 	"CanContainContent": true,
 	"IsBetaVersion": true,
 	"IsExperimentalVersion": false,
@@ -20,11 +20,6 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		},
-          {
-            "Name": "SimpleInventoryEditor",
-            "Type": "Editor",
-            "LoadingPhase": "Default"
-        },
 		{
 			"Name": "SimpleInventoryTests",
 			"Type": "Editor",
