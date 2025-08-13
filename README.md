@@ -1,5 +1,8 @@
 # Simple Inventory
 
+[![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/minigamedev)
+[![Bluesky](https://img.shields.io/badge/Bluesky-0285FF?style=for-the-badge&logo=Bluesky&logoColor=white)](https://bsky.app/profile/minigamedev.bsky.social)
+
 **SimpleInventory** is an Unreal Engine 5+ plugin that provides a lightweight, extensible inventory system using the Subsystem pattern. The `SimpleInventorySubsystem` is always present during runtime, ensuring your inventory persists across level transitions. You can register and manage multiple named inventories, giving you full flexibility in organizing your game’s inventory systems.
 
 
