@@ -31,6 +31,59 @@ void SimpleInventorySubsystemSpec::Define() {
             TestTrue("Inventory should be stored in map", InventorySubsystem->InventoryMap.Contains(TEXT("TestInv")));
         });
     });
+
+    Describe("RegisterInventoryDefinitions", [this]() {
+        It("should register all inventories from a definitions asset", [this]() {
+            USimpleInventoryDefinitions* Definitions = NewObject<USimpleInventoryDefinitions>();
+            FSimpleInventoryDefinition Def1;
+            Def1.InventoryName = TEXT("InvFromDef1");
+            Def1.MaxSlots = 3;
+
+            FSimpleInventoryDefinition Def2;
+            Def2.InventoryName = TEXT("InvFromDef2");
+            Def2.MaxSlots = 5;
+
+            Definitions->Values.Add(Def1);
+            Definitions->Values.Add(Def2);
+
+            InventorySubsystem->RegisterInventoryDefinitions(Definitions);
+
+            TestTrue("InvFromDef1 should be registered", InventorySubsystem->InventoryMap.Contains(TEXT("InvFromDef1")));
+            TestTrue("InvFromDef2 should be registered", InventorySubsystem->InventoryMap.Contains(TEXT("InvFromDef2")));
+        });
+
+        It("should gracefully handle null definitions", [this]() {
+            InventorySubsystem->RegisterInventoryDefinitions(nullptr);
+
+            TestEqual("Inventory map should remain empty", InventorySubsystem->InventoryMap.Num(), 0);
+        });
+
+        It("should skip duplicate inventories without crashing", [this]() {
+            USimpleInventoryDefinitions* Definitions = NewObject<USimpleInventoryDefinitions>();
+            
+            FSimpleInventoryDefinition Def1;
+            Def1.InventoryName = TEXT("DupInv");
+            Def1.MaxSlots = 3;
+
+            FSimpleInventoryDefinition Def2;
+            Def2.InventoryName = TEXT("DupInv");
+            Def2.MaxSlots = 7;
+
+            Definitions->Values.Add(Def1);
+            Definitions->Values.Add(Def2);
+
+            InventorySubsystem->RegisterInventoryDefinitions(Definitions);
+
+            TestEqual("Only one inventory should be registered", InventorySubsystem->InventoryMap.Num(), 1);
+
+            USimpleInventory* Out = nullptr;
+            InventorySubsystem->GetInventory(TEXT("DupInv"), Out);
+            TestNotNull("Inventory should exist despite duplicates", Out);
+            if (Out) {
+                TestEqual("Duplicate inventory should keep the first MaxSlots value", Out->MaxSlotSize, 3);
+            }
+        });
+    });
     
     Describe("GetAllInventories", [this]() {
         BeforeEach([this]() {
@@ -209,29 +262,20 @@ void SimpleInventorySubsystemSpec::Define() {
             InventorySubsystem->AddItem(InventoryName, FInstancedStruct::Make(TestItem), 1, bAdded);
             TestTrue("Item should be added successfully", bAdded);
             
-            // Act 1: Save storage
             FSimpleInventorySubsystemStorage SavedStorage;
             InventorySubsystem->GetStorage(SavedStorage);
             
-            // Clear the inventory completely
             InventorySubsystem->Clear(InventoryName);
             
-            // Ensure it’s empty
-            {
-                TArray<USimpleInventorySlot*> SlotsAfterClear;
-                InventorySubsystem->GetSlots(InventoryName, SlotsAfterClear);
-                TestTrue("Inventory should be empty after ClearInventory", SlotsAfterClear.Num() == 0);
-            }
+            TArray<USimpleInventorySlot*> SlotsAfterClear;
+            InventorySubsystem->GetSlots(InventoryName, SlotsAfterClear);
+            TestTrue("Inventory should be empty after ClearInventory", SlotsAfterClear.Num() == 0);
             
-            // Act 2: Inflate from saved storage
             InventorySubsystem->InflateFromStorage(SavedStorage);
             
-            // Assert: Item should be restored
-            {
-                TArray<USimpleInventorySlot*> SlotsAfterInflate;
-                InventorySubsystem->GetSlots(InventoryName, SlotsAfterInflate);
-                TestEqual("Inventory should have 1 item after InflateFromStorage", SlotsAfterInflate.Num(), 1);
-            }
+            TArray<USimpleInventorySlot*> SlotsAfterInflate;
+            InventorySubsystem->GetSlots(InventoryName, SlotsAfterInflate);
+            TestEqual("Inventory should have 1 item after InflateFromStorage", SlotsAfterInflate.Num(), 1);
         });
     });
 }
