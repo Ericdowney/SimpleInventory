@@ -9,6 +9,7 @@
 #include "SimpleInventory.h"
 #include "SimpleInventorySlot.h"
 #include "SimpleInventorySubsystem.h"
+#include "SimpleInventoryDefinitions.h"
 
 DEFINE_SPEC(SimpleInventorySubsystemSpec, "SimpleInventory.SimpleInventorySubsystem", EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
@@ -34,7 +35,7 @@ void SimpleInventorySubsystemSpec::Define() {
 
     Describe("RegisterInventoryDefinitions", [this]() {
         It("should register all inventories from a definitions asset", [this]() {
-            USimpleInventoryDefinitions* Definitions = NewObject<USimpleInventoryDefinitions>();
+            USimpleInventoryDefinitions* Definitions = NewObject<USimpleInventoryDefinitions>(GetTransientPackage(), USimpleInventoryDefinitions::StaticClass());
             FSimpleInventoryDefinition Def1;
             Def1.InventoryName = TEXT("InvFromDef1");
             Def1.MaxSlots = 3;
@@ -59,7 +60,7 @@ void SimpleInventorySubsystemSpec::Define() {
         });
 
         It("should skip duplicate inventories without crashing", [this]() {
-            USimpleInventoryDefinitions* Definitions = NewObject<USimpleInventoryDefinitions>();
+            USimpleInventoryDefinitions* Definitions = NewObject<USimpleInventoryDefinitions>(GetTransientPackage(), USimpleInventoryDefinitions::StaticClass());
             
             FSimpleInventoryDefinition Def1;
             Def1.InventoryName = TEXT("DupInv");

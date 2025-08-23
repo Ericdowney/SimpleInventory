@@ -34,7 +34,7 @@ void USimpleInventory::AddItem(FInstancedStruct Item,
     
     Result = false;
     if (!Item.IsValid()) {
-        UE_LOG(SimpleInventoryLog, Error, TEXT("USimpleInventory::AddItem || Invalid InstancedStruct"));
+        UE_LOG(SimpleInventoryLog, Warning, TEXT("USimpleInventory::AddItem || Invalid InstancedStruct"));
         return;
     }
     
@@ -45,7 +45,7 @@ void USimpleInventory::AddItem(FInstancedStruct Item,
     const UStruct* ItemStructType = Item.GetScriptStruct();
     void* ItemStructMemory = Item.GetMutableMemory();
     if (!ItemStructType || !ItemStructMemory) {
-        UE_LOG(SimpleInventoryLog, Error, TEXT("USimpleInventory::AddItem || Struct type or memory is null"));
+        UE_LOG(SimpleInventoryLog, Warning, TEXT("USimpleInventory::AddItem || Struct type or memory is null"));
         return;
     }
     
@@ -53,7 +53,7 @@ void USimpleInventory::AddItem(FInstancedStruct Item,
     FProperty* ItemIDProp = ItemStructType->FindPropertyByName(IDPropName);
     FIntProperty* ItemIDIntProp = CastField<FIntProperty>(ItemIDProp);
     if (!ItemIDIntProp) {
-        UE_LOG(SimpleInventoryLog, Error, TEXT("USimpleInventory::AddItem || Struct missing valid 'ID' int property"));
+        UE_LOG(SimpleInventoryLog, Warning, TEXT("USimpleInventory::AddItem || Struct missing valid 'ID' int property"));
         return;
     }
     const int32 ItemID = ItemIDIntProp->GetPropertyValue_InContainer(ItemStructMemory);
