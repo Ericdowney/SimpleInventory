@@ -5,9 +5,10 @@
 [![Mastodon](https://img.shields.io/badge/-MASTODON-%232B90D9?style=for-the-badge&logo=mastodon&logoColor=white)](https://mastodon.gamedev.place/@minigamedev)
 ![Unreal Engine](https://img.shields.io/badge/unrealengine-%23313131.svg?style=for-the-badge&logo=unrealengine&logoColor=white)
 
-
 **SimpleInventory** is a lightweight and flexible inventory system for Unreal Engine 5+, designed to be simple enough for small projects yet extensible enough to grow with your game.  
 It uses `InstancedStruct` for item definitions, supports stacking, change events, persistence, and integrates with Blueprints and C++.
+
+**Example Project**: https://github.com/Ericdowney/SimpleInventoryExample/
 
 
 ## ✨ Features
