@@ -1,21 +1,42 @@
-# Simple Inventory
+# SimpleInventory
 
 [![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/minigamedev)
 [![Bluesky](https://img.shields.io/badge/Bluesky-0285FF?style=for-the-badge&logo=Bluesky&logoColor=white)](https://bsky.app/profile/minigamedev.bsky.social)
 [![Mastodon](https://img.shields.io/badge/-MASTODON-%232B90D9?style=for-the-badge&logo=mastodon&logoColor=white)](https://mastodon.gamedev.place/@minigamedev)
+![Unreal Engine](https://img.shields.io/badge/unrealengine-%23313131.svg?style=for-the-badge&logo=unrealengine&logoColor=white)
 
-**SimpleInventory** is an Unreal Engine 5+ plugin that provides a lightweight, extensible inventory system using the Subsystem pattern. The `SimpleInventorySubsystem` is always present during runtime, ensuring your inventory persists across level transitions. You can register and manage multiple named inventories, giving you full flexibility in organizing your game’s inventory systems.
+
+**SimpleInventory** is a lightweight and flexible inventory system for Unreal Engine 5+, designed to be simple enough for small projects yet extensible enough to grow with your game.  
+It uses `InstancedStruct` for item definitions, supports stacking, change events, persistence, and integrates with Blueprints and C++.
 
 
 ## ✨ Features
 
-* `UGameInstanceSubsystem`: Inventory data persists across levels automatically.
-* Multiple named inventories: Organize inventories however you like.
-* Blueprint & C++ support: All API functions exposed to Blueprints.
-* Stackable items: Built-in logic for stackable / non-stackable items.
-* Save & load support: Inventory data stored in a `FSimpleInventorySubsystemStorage` struct for use with `USaveGame`.
-* Events for inventory changes: React to additions, removals, clears, and more.
-* Detailed logging: Debug inventory behavior with `SimpleInventoryLog`.
+- **Item Management**
+  - Add, remove, copy, and clear items.
+  - Stackable or non-stackable items with customizable stack sizes.
+  - Automatic slot resizing and enforcement of maximum slot counts.
+
+- **Events & Notifications**
+  - Inventory change events (`Addition`, `Removal`, `Clear`, `Copy`, `Full`, etc.).
+  - Broadcast events for UI updates or gameplay reactions.
+
+- **Blueprint & C++ Support**
+  - Fully exposed to Blueprints for rapid prototyping.
+  - Clean C++ API for performance-critical systems.
+
+- **Subsystem Integration**
+  - `USimpleInventorySubsystem` for global inventory management across your game.
+  - Register inventories by name or via a `DataAsset` (`USimpleInventoryDefinitions`).
+
+- **Actor Integration**
+  - `USimpleInventoryComponent` for adding an inventory to any `AActor`.
+
+- **Save & Load Support**
+  - Inventory data can be stored in a `FSimpleInventorySubsystemStorage` struct for use with `USaveGame`.
+
+- **Detailed Logging**
+  - Debug inventory behavior with `SimpleInventoryLog`.
 
 ## 📦 Installation
 
@@ -87,6 +108,21 @@ In Blueprints:
 
 ### 4. Registering an Inventory
 
+Inventories can be registered in two ways:
+
+1. Direct Registration – Call RegisterInventory (available in both C++ and Blueprints).
+
+This function takes:
+
+* FName InventoryName – A unique name for the inventory.
+* int32 MaxSlots – The maximum number of slots the inventory can hold.
+* USimpleInventory*& – An output pointer to the newly created (or existing) inventory.
+
+2. Data Asset Registration – Create a SimpleInventoryDefinitions Data Asset (see screenshot below) to define multiple inventories at once. Pass this asset to RegisterInventoryDefinitions to register all defined inventories in bulk.
+
+![Data Asset - Inventory Definitions](./Resources/InventoryDefinitionsAsset.png)
+
+
 ```c++
 USimpleInventory* MyInventory;
 InventorySubsystem->RegisterInventory("PlayerInventory", 30, MyInventory);
@@ -99,20 +135,27 @@ Items must be wrapped in an `FInstancedStruct`:
 ```c++
 FMyGameItem ActualItem;
 // Fill ActualItem data...
+
 InventorySubsystem->AddItem("PlayerInventory", FInstancedStruct::Make(ActualItem), 5, bResult);
 ```
 
-**Note**: To avoid using `FInstancedStruct` everywhere, create your own facade (Blueprint Library or custom subsystem) that wraps `SimpleInventorySubsystem` calls and works directly with your game’s item type.
+**Note**: To avoid using `FInstancedStruct` everywhere, I recommend creating your own facade (Blueprint Library or custom subsystem) that wraps `SimpleInventorySubsystem` calls and works directly with your game’s item type(s).
 
 ### 6. Saving & Loading
 
-* Use `GetStorage()` to retrieve the current inventory data as an `FSimpleInventorySubsystemStorage`.
-* Store it in your `USaveGame` subclass.
-* Use `InflateFromStorage()` to restore inventories from saved data.
+Inventories can be serialized and restored via storage structs:
+
+```c++
+FSimpleInventorySubsystemStorage Storage;
+Subsystem->GetStorage(Storage);
+
+// Later...
+Subsystem->InflateFromStorage(Storage);
+```
 
 ## 📢 Events
 
-Both `USimpleInventory` and `USimpleInventorySubsystem` broadcast change events when the inventory updates:
+Both `USimpleInventory` and `USimpleInventorySubsystem` broadcast change events when an inventory updates:
 
 * Addition
 * Removal
@@ -137,13 +180,9 @@ To enable detailed logging, Add this to your `DefaultEngine.ini`:
 SimpleInventoryLog=Verbose
 ```
 
----
-
 ## 🤝 Contributing
 
 Feel free to fork, extend, and integrate it into your own systems. If you improve it, consider sharing back via a pull request or issue!
-
----
 
 ## 📄 License
 

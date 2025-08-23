@@ -3,6 +3,7 @@
 #include "SimpleInventorySubsystem.h"
 
 #include "SimpleInventory.h"
+#include "SimpleInventoryDefinitions.h"
 #include "SimpleInventorySlot.h"
 #include "SimpleInventoryLog.h"
 
@@ -204,6 +205,43 @@ void USimpleInventorySubsystem::HasItem(const FName InventoryName,
 }
 
 /**
+ * Registers multiple inventories from a Data Asset.
+ *
+ * Each entry in the provided `USimpleInventoryDefinitions` asset defines
+ * an inventory name and maximum slot count. If an inventory with the same
+ * name already exists, it will be skipped and a warning will be logged.
+ * Otherwise, a new `USimpleInventory` will be created, configured, and
+ * added to the subsystem's inventory map.
+ *
+ * @param Definitions  The `USimpleInventoryDefinitions` asset containing
+ *                     one or more inventory definitions to register.
+ */
+void USimpleInventorySubsystem::RegisterInventoryDefinitions(USimpleInventoryDefinitions* Definitions) {
+    UE_LOG(SimpleInventoryLog, Verbose, TEXT("USimpleInventorySubsystem::%s"), *FString(__FUNCTION__));
+
+    if (!Definitions) {
+        UE_LOG(SimpleInventoryLog, Warning, TEXT("USimpleInventorySubsystem::%s || Definitions is null"), *FString(__FUNCTION__));
+        return;
+    }
+
+    for (const auto& Definition : Definitions->Values) {
+        if (InventoryMap.Contains(Definition.InventoryName)) {
+            UE_LOG(SimpleInventoryLog, Warning, TEXT("USimpleInventorySubsystem::%s || Inventory '%s' already registered"), *FString(__FUNCTION__), *Definition.InventoryName.ToString());
+            continue;
+        }
+
+        USimpleInventory* NewInventory = NewObject<USimpleInventory>(this);
+        NewInventory->InventoryName = Definition.InventoryName;
+        NewInventory->MaxSlotSize = Definition.MaxSlots;
+        NewInventory->OnInventoryChangeEvent.AddDynamic(this, &USimpleInventorySubsystem::HandleOnChangeEvent);
+
+        InventoryMap.Add(Definition.InventoryName, NewInventory);
+
+        UE_LOG(SimpleInventoryLog, Verbose, TEXT("USimpleInventorySubsystem::%s || Registered Inventory '%s'"), *FString(__FUNCTION__), *Definition.InventoryName.ToString());
+    }
+}
+
+/**
  * Registers a new inventory with the given name and maximum slot count.
  * If it already exists, returns the existing inventory.
  *
@@ -220,18 +258,12 @@ void USimpleInventorySubsystem::RegisterInventory(const FName InventoryName,
     Find(InventoryName, Inventory);
     if (!Inventory) {
         USimpleInventory* NewInventory = NewObject<USimpleInventory>(this);
-        if (!NewInventory) {
-            UE_LOG(SimpleInventoryLog, Error, TEXT("USimpleInventorySubsystem::RegisterInventory || Failed to create new USimpleInventory for %s"), *InventoryName.ToString());
-            Result = nullptr;
-            return;
-        }
-        
         NewInventory->InventoryName = InventoryName;
         NewInventory->MaxSlotSize = MaxSlots;
         InventoryMap.Add(InventoryName, NewInventory);
-        Result = NewInventory;
-        
         NewInventory->OnInventoryChangeEvent.AddDynamic(this, &USimpleInventorySubsystem::HandleOnChangeEvent);
+
+        Result = NewInventory;
     }
     else {
         Result = Inventory;
